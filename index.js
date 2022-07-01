@@ -6,14 +6,14 @@ const app = express();
 
 errorLogger();
 
-require("./startup/config")();
-
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
 require("./startup/routes")(app);
 mongodb();
+require("./startup/config")();
+require("./startup/prod")(app);
 
 const port = process.env.PORT || 3006;
 app.listen(port, () => infoLogger(`Listening on port ${port}...`));
