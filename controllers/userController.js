@@ -41,7 +41,7 @@ const registerUser = async (req, res) => {
     throw new Error(error.details[0].message);
   }
 
-  const {
+  let {
     firstName,
     lastName,
     email,
