@@ -6,12 +6,15 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "nodemon index.js"
+    "serve": "nodemon index.js",
+    "data:import": "node seeder",
+    "data:destroy": "node seeder -d"
   },
   "author": "Faleye Oluwafemi Joseph",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "colors": "^1.4.0",
     "compression": "^1.7.4",
     "config": "^3.3.7",
     "cors": "^2.8.5",

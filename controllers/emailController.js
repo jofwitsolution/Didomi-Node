@@ -44,7 +44,6 @@ const sendEmail = async (req, res) => {
       res.status(400);
       throw new Error("Problem sending mail");
     } else {
-      console.log(data);
       let email = await Email.create({
         to: emailList,
         subject,
