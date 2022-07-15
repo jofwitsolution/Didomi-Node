@@ -149,8 +149,16 @@ const updateUserProfile = async (req, res) => {
 // @route GET /api/users
 // @access Private/Admin
 const getUsers = async (req, res) => {
-  const users = await User.find({}).select("-password -isAdmin -__v");
-  res.json(users);
+  const pageSize = 10;
+  const page = Number(req.query.pageNumber) || 1;
+
+  const count = await User.countDocuments({});
+  const users = await User.find({})
+    .select("-password -isAdmin -__v")
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+
+  res.json({ users, page, pages: Math.ceil(count / pageSize) });
 };
 
 // @desc Delete user

@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const colors = require("colors");
 const universities = require("./data/university");
+const statistics = require("./data/statistic");
 const { Universities } = require("./models/uniModel");
+const { Statistics } = require("./models/statsModel");
 const { mongodb } = require("./startup/db");
 
 require("./startup/config")();
@@ -12,8 +14,10 @@ mongodb();
 const importData = async () => {
   try {
     await Universities.deleteMany();
+    await Statistics.deleteMany();
 
     const createUniversities = await Universities.insertMany(universities);
+    const createStatistics = await Statistics.insertMany(statistics);
 
     console.log("Data Imported!".green.inverse);
     process.exit();
@@ -26,6 +30,7 @@ const importData = async () => {
 const destroyData = async () => {
   try {
     await Universities.deleteMany();
+    await Statistics.deleteMany();
 
     console.log("Data Destroyed!".green.inverse);
     process.exit();
