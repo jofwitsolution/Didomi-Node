@@ -8,7 +8,8 @@ const statsRoutes = require("../routes/statsRoutes");
 
 module.exports = function (app) {
   app.use(express.json());
-  app.use(cors());
+  // app.use(cors());
+  app.use(cors({ origin: process.env.REMOTE_CLIENT_APP, credentials: true }));
   app.use("/api/users", userRoutes);
   app.use("/api/email", emailRoutes);
   app.use("/api/universities", uniRoutes);

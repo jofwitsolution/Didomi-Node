@@ -1,9 +1,11 @@
 const morgan = require("morgan");
+const dotenv = require("dotenv");
 const express = require("express");
 const { errorLogger, infoLogger } = require("./startup/errorLogging");
 const { mongodb } = require("./startup/db");
 const app = express();
 
+dotenv.config()
 errorLogger();
 
 if (process.env.NODE_ENV === "development") {
