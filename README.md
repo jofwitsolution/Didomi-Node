@@ -63,3 +63,5 @@ On Windows:
 
 ### Nodemailer was used in this project
 To enable nodemailer functionality, google OAuth2 was setup. The details of the OAuth2 is in config/default.json. For security reasons this file has been ignored in .gitignore. Ensure to set this variables in production.
+
+### This application is deployed to Heroku
