@@ -11,8 +11,7 @@ module.exports = function (app) {
   // app.use(cors());
   app.use(
     cors({
-      origin: process.env.REMOTE_CLIENT_APP,
-      accessControlAllowOrigin: process.env.REMOTE_CLIENT_APP,
+      origin: "*",
       credentials: true,
     })
   );
