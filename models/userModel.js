@@ -31,6 +31,7 @@ const userSchema = mongoose.Schema(
       type: String,
       minlength: 8,
       maxlength: 50,
+      trim: true,
       required: true,
     },
     country: {

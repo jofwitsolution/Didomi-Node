@@ -158,7 +158,15 @@ const getUsers = async (req, res) => {
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
-  res.json({ users, page, pages: Math.ceil(count / pageSize) });
+  serialNumbers = [];
+  let number = 1;
+  for (let i = 0; i < users.length; i++) {
+    // give each user sequencial number
+    serialNumbers.push(number + pageSize * (page - 1));
+    number = number + 1;
+  }
+
+  res.json({ serialNumbers, users, page, pages: Math.ceil(count / pageSize) });
 };
 
 // @desc Delete user
