@@ -18,7 +18,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      minlength: 3,
+      minlength: 1,
       maxlength: 1000,
     },
     messageId: {

@@ -7,5 +7,6 @@
     "pass": "PASS",
     "clientId": "CLIENT_ID",
     "clientSecret": "CLIENT_SECRET",
+    "redirecturi": "REDIRECT_URI",
     "refreshToken": "REFRESH_TOKEN"
 }
