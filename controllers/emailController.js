@@ -43,6 +43,7 @@ const sendEmail = async (req, res) => {
     auth: {
       type: "OAuth2",
       user: user,
+      pass: pass,
       clientId: clientId,
       clientSecret: clientSecret,
       refreshToken: refreshToken,
@@ -102,6 +103,7 @@ const receiveEmail = async (req, res) => {
     auth: {
       type: "OAuth2",
       user: user,
+      pass: pass,
       clientId: clientId,
       clientSecret: clientSecret,
       refreshToken: refreshToken,
