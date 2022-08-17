@@ -10,6 +10,9 @@ const {
   deleteUser,
   getUserById,
   updateUser,
+  resetPassword,
+  getNewPassword,
+  postNewPassword,
 } = require("../controllers/userController");
 
 router.route("/").post(registerUser).get(protect, admin, getUsers);
@@ -23,5 +26,8 @@ router
   .get(protect, admin, getUserById)
   .delete(protect, admin, deleteUser)
   .put(protect, admin, updateUser);
+router.post("/reset-password", resetPassword);
+router.get("/new-password/:token", getNewPassword);
+router.post("/new-password", postNewPassword);
 
 module.exports = router;

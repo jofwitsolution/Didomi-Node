@@ -79,6 +79,8 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    resetToken: String,
+    resetTokenExpiration: Date,
   },
   { timestamps: true },
   { collation: { locale: "en", strength: 2 } }
@@ -143,6 +145,13 @@ function validateUser(user, task) {
       country: Joi.string().min(3).max(50).required().label("Country"),
       level: Joi.string().min(3).max(50).required().label("Level"),
       isAdmin: Joi.boolean().required().label("Is admin"),
+    });
+
+    return schema.validate(user);
+  }
+  if (task === "password") {
+    const schema = Joi.object({
+      password: Joi.string().min(10).max(25).required().label("Password"),
     });
 
     return schema.validate(user);
