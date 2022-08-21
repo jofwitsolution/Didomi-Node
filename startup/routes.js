@@ -11,7 +11,7 @@ module.exports = function (app) {
   // app.use(cors());
   app.use(
     cors({
-      origin: "*",
+      origin: "http://react-devcent.herokuapp.com",
       credentials: true,
     })
   );
