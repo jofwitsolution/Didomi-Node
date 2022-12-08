@@ -1,14 +1,21 @@
-const config = require("config");
-const { Email, validate } = require("../models/emailModel");
-const nodemailer = require("nodemailer");
-const { google } = require("googleapis");
+const config = require('config');
+const { Email, validate } = require('../models/emailModel');
+const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
 
-const user = config.get("user");
-const pass = config.get("pass");
-const clientId = config.get("clientId");
-const clientSecret = config.get("clientSecret");
-const refreshToken = config.get("refreshToken");
-const redirecturi = config.get("redirecturi");
+// const user = config.get("user");
+// const pass = config.get("pass");
+// const clientId = config.get("clientId");
+// const clientSecret = config.get("clientSecret");
+// const refreshToken = config.get("refreshToken");
+// const redirecturi = config.get("redirecturi");
+
+const user = process.env.USER;
+const pass = process.env.PASS;
+const clientId = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
+const refreshToken = process.env.REFRESH_TOKEN;
+const redirecturi = process.env.REDIRECT_URI;
 
 const oAuth2Client = new google.auth.OAuth2(
   clientId,
@@ -30,7 +37,7 @@ const sendEmail = async (req, res) => {
   const { to: emailList, subject, text } = req.body;
 
   let mailOptions = {
-    from: "Didomi Company Limited <didomiconsortium@gmail.com>",
+    from: 'Didomi Company Limited <didomiconsortium@gmail.com>',
     to: emailList,
     subject: subject,
     text: text,
@@ -39,9 +46,9 @@ const sendEmail = async (req, res) => {
   const accessToken = await oAuth2Client.getAccessToken();
 
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: 'gmail',
     auth: {
-      type: "OAuth2",
+      type: 'OAuth2',
       user: user,
       pass: pass,
       clientId: clientId,
@@ -54,7 +61,7 @@ const sendEmail = async (req, res) => {
   transporter.sendMail(mailOptions, async function (err, data) {
     if (err) {
       res.status(400);
-      throw new Error("Problem sending mail");
+      throw new Error('Problem sending mail');
     } else {
       let email = await Email.create({
         to: emailList,
@@ -65,11 +72,11 @@ const sendEmail = async (req, res) => {
 
       if (email) {
         res.json({
-          message: "Email sent successfully",
+          message: 'Email sent successfully',
         });
       } else {
         res.status(400);
-        throw new Error("Bad email data");
+        throw new Error('Bad email data');
       }
     }
   });
@@ -91,7 +98,7 @@ const receiveEmail = async (req, res) => {
 
   let mailOptions = {
     from: `${name} <didomiconsortium@gmail.com>`,
-    to: "didomiconsortium@gmail.com",
+    to: 'didomiconsortium@gmail.com',
     subject: subject,
     text: text,
   };
@@ -99,9 +106,9 @@ const receiveEmail = async (req, res) => {
   const accessToken = await oAuth2Client.getAccessToken();
 
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: 'gmail',
     auth: {
-      type: "OAuth2",
+      type: 'OAuth2',
       user: user,
       pass: pass,
       clientId: clientId,
@@ -115,10 +122,10 @@ const receiveEmail = async (req, res) => {
     if (err) {
       res.status(400);
       // console.log(err);
-      throw new Error("Problem sending mail");
+      throw new Error('Problem sending mail');
     } else {
       res.json({
-        message: "Email sent successfully",
+        message: 'Email sent successfully',
       });
     }
   });

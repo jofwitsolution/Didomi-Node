@@ -1,29 +1,30 @@
-require("express-async-errors");
-const winston = require("winston");
-const config = require("config");
+require('express-async-errors');
+const winston = require('winston');
+const config = require('config');
 
-const db = config.get("db");
+// const db = config.get("db");
+const db = process.env.MONGO_URI;
 
 module.exports.errorLogger = function () {
   const logger = winston.createLogger({
-    level: process.env.LOG_LEVEL || "error",
+    level: process.env.LOG_LEVEL || 'error',
     format: winston.format.json(),
     exitOnError: false,
     transports: [new winston.transports.Console()],
     exceptionHandlers: [
       new winston.transports.Console(),
-      new winston.transports.File({ filename: "exceptions.log" }),
+      new winston.transports.File({ filename: 'exceptions.log' }),
     ],
     rejectionHandlers: [
       new winston.transports.Console(),
-      new winston.transports.File({ filename: "rejections.log" }),
+      new winston.transports.File({ filename: 'rejections.log' }),
     ],
   });
 };
 
 module.exports.infoLogger = function (message, err) {
   const logger = winston.createLogger({
-    level: "info",
+    level: 'info',
     format: winston.format.prettyPrint(),
     exitOnError: false,
     transports: [new winston.transports.Console()],

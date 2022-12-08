@@ -1,12 +1,12 @@
-const config = require("config");
-const jwt = require("jsonwebtoken");
+const config = require('config');
+const jwt = require('jsonwebtoken');
 
 const generateToken = (id, firstName, lastName, isAdmin) => {
   return jwt.sign(
     { id, firstName, lastName, isAdmin },
-    config.get("jwtPrivateKey"),
+    process.env.JWT_SECRET,
     {
-      expiresIn: "30d",
+      expiresIn: '30d',
     }
   );
 };
