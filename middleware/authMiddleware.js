@@ -1,6 +1,6 @@
-const config = require("config");
-const jwt = require("jsonwebtoken");
-const { User } = require("../models/userModel");
+const config = require('config');
+const jwt = require('jsonwebtoken');
+const { User } = require('../models/userModel');
 
 // jwt token will be sent as bearer
 const protect = async (req, res, next) => {
@@ -8,26 +8,26 @@ const protect = async (req, res, next) => {
 
   if (
     req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
+    req.headers.authorization.startsWith('Bearer')
   ) {
     try {
-      token = req.headers.authorization.split(" ")[1];
+      token = req.headers.authorization.split(' ')[1];
 
-      const decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      req.user = await User.findById(decoded.id).select("-password");
+      req.user = await User.findById(decoded.id).select('-password');
 
       next();
     } catch (error) {
       console.error(error);
       res.status(401);
-      throw new Error("Not auhtorized, token failed");
+      throw new Error('Not auhtorized, token failed');
     }
   }
 
   if (!token) {
     res.status(401);
-    throw new Error("Not authorized, no token");
+    throw new Error('Not authorized, no token');
   }
 };
 
@@ -36,7 +36,7 @@ const admin = (req, res, next) => {
     next();
   } else {
     res.status(401);
-    throw new Error("Not authorized as an admin.");
+    throw new Error('Not authorized as an admin.');
   }
 };
 
