@@ -5,7 +5,7 @@ const userRoutes = require('../routes/userRoutes');
 const emailRoutes = require('../routes/emailRoutes');
 const uniRoutes = require('../routes/uniRoutes');
 const statsRoutes = require('../routes/statsRoutes');
-const homepageRoute = require('../routes/homepage');
+const homepageRoute = require('../routes/homePage');
 
 module.exports = function (app) {
   app.use(express.json());
