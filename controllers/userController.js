@@ -1,16 +1,23 @@
-const config = require("config");
-const crypto = require("crypto");
-const { User, validate } = require("../models/userModel");
-const { generateToken } = require("../utils/generateToken");
-const nodemailer = require("nodemailer");
-const { google } = require("googleapis");
+const config = require('config');
+const crypto = require('crypto');
+const { User, validate } = require('../models/userModel');
+const { generateToken } = require('../utils/generateToken');
+const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
 
-const USER = config.get("user");
-const pass = config.get("pass");
-const clientId = config.get("clientId");
-const clientSecret = config.get("clientSecret");
-const refreshToken = config.get("refreshToken");
-const redirecturi = config.get("redirecturi");
+// const USER = config.get("user");
+// const pass = config.get("pass");
+// const clientId = config.get("clientId");
+// const clientSecret = config.get("clientSecret");
+// const refreshToken = config.get("refreshToken");
+// const redirecturi = config.get("redirecturi");
+
+const USER = process.env.USER;
+const pass = process.env.PASS;
+const clientId = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
+const refreshToken = process.env.REFRESH_TOKEN;
+const redirecturi = process.env.REDIRECT_URI;
 
 const oAuth2Client = new google.auth.OAuth2(
   clientId,
@@ -23,7 +30,7 @@ oAuth2Client.setCredentials({ refresh_token: refreshToken });
 // @route POST /api/users/login
 // @access Public
 const authUser = async (req, res) => {
-  const { error } = validate(req.body, "login");
+  const { error } = validate(req.body, 'login');
   if (error) {
     res.status(400);
     throw new Error(error.details[0].message);
@@ -44,7 +51,7 @@ const authUser = async (req, res) => {
     });
   } else {
     res.status(401);
-    throw new Error("Invalid email or password");
+    throw new Error('Invalid email or password');
   }
 };
 
@@ -52,7 +59,7 @@ const authUser = async (req, res) => {
 // @route POST /api/users
 // @access Public
 const registerUser = async (req, res) => {
-  const { error } = validate(req.body, "register");
+  const { error } = validate(req.body, 'register');
 
   if (error) {
     res.status(400);
@@ -77,7 +84,7 @@ const registerUser = async (req, res) => {
 
   if (userExists) {
     res.status(400);
-    throw new Error("User already exists");
+    throw new Error('User already exists');
   }
 
   const user = await User.create({
@@ -103,7 +110,7 @@ const registerUser = async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error("Invalid user data");
+    throw new Error('Invalid user data');
   }
 };
 
@@ -112,14 +119,14 @@ const registerUser = async (req, res) => {
 // @access Private
 const getUserProfile = async (req, res) => {
   const user = await User.findById(req.user._id).select(
-    "-password -policy -contactMe -__v"
+    '-password -policy -contactMe -__v'
   );
 
   if (user) {
     res.json(user);
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 };
 
@@ -127,7 +134,7 @@ const getUserProfile = async (req, res) => {
 // @route PUT /api/users/profile
 // @access Private
 const updateUserProfile = async (req, res) => {
-  const { error } = validate(req.body, "update");
+  const { error } = validate(req.body, 'update');
   if (error) {
     res.status(400);
     throw new Error(error.details[0].message);
@@ -159,7 +166,7 @@ const updateUserProfile = async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 };
 
@@ -172,7 +179,7 @@ const getUsers = async (req, res) => {
 
   const count = await User.countDocuments({});
   const users = await User.find({})
-    .select("-password -isAdmin -__v")
+    .select('-password -isAdmin -__v')
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
@@ -195,10 +202,10 @@ const deleteUser = async (req, res) => {
 
   if (user) {
     await user.remove();
-    res.json({ message: "User removed" });
+    res.json({ message: 'User removed' });
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 };
 
@@ -206,13 +213,13 @@ const deleteUser = async (req, res) => {
 // @route GET /api/users/:id
 // @access Private/Admin
 const getUserById = async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password -__v");
+  const user = await User.findById(req.params.id).select('-password -__v');
 
   if (user) {
     res.json(user);
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 };
 
@@ -220,7 +227,7 @@ const getUserById = async (req, res) => {
 // @route PUT /api/users/:id
 // @access Private/Admin
 const updateUser = async (req, res) => {
-  const { error } = validate(req.body, "adminUpdate");
+  const { error } = validate(req.body, 'adminUpdate');
   if (error) {
     res.status(400);
     throw new Error(error.details[0].message);
@@ -238,7 +245,7 @@ const updateUser = async (req, res) => {
 
       if (userExists) {
         res.status(400);
-        throw new Error("User already exists");
+        throw new Error('User already exists');
       }
     }
 
@@ -257,7 +264,7 @@ const updateUser = async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 };
 
@@ -268,14 +275,14 @@ const resetPassword = async (req, res) => {
   crypto.pseudoRandomBytes(32, async (err, buffer) => {
     if (err) {
       res.status(400);
-      throw new Error("Bad request");
+      throw new Error('Bad request');
     }
-    const token = buffer.toString("hex");
+    const token = buffer.toString('hex');
     // console.log(token);
     let user = await User.findOne({ email: req.body.email });
 
     if (!user) {
-      return res.status(404).send("User with the given email does not exist.");
+      return res.status(404).send('User with the given email does not exist.');
     }
 
     user.resetToken = token;
@@ -283,9 +290,9 @@ const resetPassword = async (req, res) => {
     user = await user.save();
 
     let mailOptions = {
-      from: "Didomi Company Limited <didomiconsortium@gmail.com>",
+      from: 'Didomi Company Limited <didomiconsortium@gmail.com>',
       to: req.body.email,
-      subject: "Password reset",
+      subject: 'Password reset',
       html: `
       <p>You requested a password reset.</p>
       <p>Click this <a href="http://www.didomiconsortium.com/new-password/${token}">link<a/> to set a new password.</p>
@@ -301,9 +308,9 @@ const resetPassword = async (req, res) => {
     const accessToken = await oAuth2Client.getAccessToken();
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      service: 'gmail',
       auth: {
-        type: "OAuth2",
+        type: 'OAuth2',
         user: USER,
         pass: pass,
         clientId: clientId,
@@ -316,10 +323,10 @@ const resetPassword = async (req, res) => {
     transporter.sendMail(mailOptions, function (err, data) {
       if (err) {
         console.log(err);
-        return res.status(400).send("Problem occurred.");
+        return res.status(400).send('Problem occurred.');
       } else {
         res.json({
-          message: "A link to change password has been sent to your email.",
+          message: 'A link to change password has been sent to your email.',
         });
       }
     });
@@ -338,7 +345,7 @@ const getNewPassword = async (req, res) => {
   });
 
   if (!user) {
-    return res.status(400).send("Token expired. Request new reset.");
+    return res.status(400).send('Token expired. Request new reset.');
   }
 
   res.json({
@@ -353,7 +360,7 @@ const getNewPassword = async (req, res) => {
 const postNewPassword = async (req, res) => {
   const { userId, passwordToken, password } = req.body;
 
-  const { error } = validate({ password }, "password");
+  const { error } = validate({ password }, 'password');
   if (error) {
     return res.status(400).send(error.details[0].message);
   }
@@ -365,7 +372,7 @@ const postNewPassword = async (req, res) => {
   });
 
   if (!user) {
-    return res.status(400).send("Token expired. Request new reset.");
+    return res.status(400).send('Token expired. Request new reset.');
   }
 
   user.password = password;
@@ -375,7 +382,7 @@ const postNewPassword = async (req, res) => {
   await user.save();
 
   res.json({
-    message: "Password updated successfully.",
+    message: 'Password updated successfully.',
   });
 };
 
